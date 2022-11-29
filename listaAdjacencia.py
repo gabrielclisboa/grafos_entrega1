@@ -17,6 +17,7 @@ class ListaAdjacencia():
             if(self.tipoGrafo == 0):
                 self.listaAdjacencia[verticeAdjacente] = self.listaAdjacencia[verticeAdjacente].append(vertice)
 
+
     def removeAresta(self,vertice,verticeAdjacente):
         self.listaAdjacencia[vertice] = self.listaAdjacencia[vertice].remove(verticeAdjacente)
         if(self.tipoGrafo == 0):
@@ -82,3 +83,32 @@ class ListaAdjacencia():
 
     def printPonderacaoVertice(self,vertice):
        return print("- Ponderação: "+ self.ponderacaoVertice[vertice])
+
+    def printArestas(self):
+        listaVerticesAcessados = []
+        for key,value in self.listaAdjacencia.items():
+            print(key)
+            print(value)
+            for vertice in list(value):
+                if(key not in listaVerticesAcessados):
+                    print("("+ key+","+vertice+")"+self.printPonderacaoAresta(Aresta(key,vertice))+self.printRotulacaoAresta(Aresta(key,vertice)))
+            listaVerticesAcessados.append(key)
+
+    def printPonderacaoAresta(self,aresta:Aresta):
+        return (' - Ponderação: '+ self.ponderacaoAresta[aresta])
+
+    def printRotulacaoAresta(self,aresta:Aresta):
+        return (' - Rotulação: '+ self.rotulacaoAresta[aresta])
+    
+
+
+g = ListaAdjacencia(0)
+
+g.addVertice("a")
+g.addVertice("b")
+g.addVertice("c")
+g.addVertice("d")
+
+g.addAresta("a","b")
+#g.printVertices()
+g.printArestas()
