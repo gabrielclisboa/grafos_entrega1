@@ -13,15 +13,20 @@ class ListaAdjacencia():
 
     def addAresta(self,vertice,verticeAdjacente):
         if(self.verificaExistenciaVertice(vertice) and self.verificaExistenciaVertice(verticeAdjacente)):
-            self.listaAdjacencia[vertice] = self.listaAdjacencia[vertice].append(verticeAdjacente)
+            self.listaAdjacencia[vertice].append(verticeAdjacente)
             if(self.tipoGrafo == 0):
-                self.listaAdjacencia[verticeAdjacente] = self.listaAdjacencia[verticeAdjacente].append(vertice)
+                self.listaAdjacencia[verticeAdjacente].append(vertice)
 
 
     def removeAresta(self,vertice,verticeAdjacente):
-        self.listaAdjacencia[vertice] = self.listaAdjacencia[vertice].remove(verticeAdjacente)
+        if(vertice in self.ponderacaoAresta):
+            self.ponderacaoAresta[vertice].remove(verticeAdjacente)
+        if(vertice in self.rotulacaoAresta):
+            self.rotulacaoAresta[vertice].remove(verticeAdjacente)
+            
+        self.listaAdjacencia[vertice].remove(verticeAdjacente)
         if(self.tipoGrafo == 0):
-            self.listaAdjacencia[verticeAdjacente] = self.listaAdjacencia[verticeAdjacente].remove(vertice)
+            self.listaAdjacencia[verticeAdjacente].remove(vertice)
 
     def addPonderacaoAresta(self,aresta:Aresta,valor):
        self.ponderacaoAresta[aresta] = valor
@@ -44,7 +49,7 @@ class ListaAdjacencia():
     def verificaAdjacenciaArestas(self,aresta:Aresta,arestaAdjacente:Aresta):
         if (aresta != arestaAdjacente): 
             if (self.tipoGrafo == 0):
-                return aresta.vertice1 == arestaAdjacente.vertice2 or aresta.vertice1 == arestaAdjacente.vertice1 or aresta.vertice2 == arestaAdjacente.vertice2
+                return aresta.vertice1 == arestaAdjacente.vertice1 or aresta.vertice2 == arestaAdjacente.vertice2 or aresta.vertice1 == arestaAdjacente.vertice2 or arestaAdjacente.vertice1 == aresta.vertice2
             else: 
                 return aresta.vertice1 == arestaAdjacente.vertice1
         else: 
@@ -52,9 +57,9 @@ class ListaAdjacencia():
         
     def quantidadeAresta(self):
         length = 0
-        for vertice in self.listaAdjacencia:
-            length += len(vertice.values())
-        return length
+        for key,value in self.listaAdjacencia.items():
+            length += len(value)
+        return length if self.tipoGrafo != 0 else int(length/2)
     
     def quantidadeVertices(self):
         return len(self.listaAdjacencia.keys())
@@ -63,13 +68,17 @@ class ListaAdjacencia():
        valid = True
        for key, value in self.listaAdjacencia.items():
         for key1, value1 in self.listaAdjacencia.items():
-         if(key != key1):
-          if(value1.count(key) > 0):
-           valid = False
-        return valid
+            if(key != key1):
+                if(value1.count(key) == 0):
+                    valid = False
+       return valid
     
     def verificaGrafoVazio(self):
-       return False if len(self.listaAdjacencia.values()) > 0 else True
+       valid = True
+       for key, value in self.listaAdjacencia.items():
+        if(len(value) > 0):
+            valid = False
+       return valid
     
 
     def printListaAdjacencia(self):
@@ -87,28 +96,16 @@ class ListaAdjacencia():
     def printArestas(self):
         listaVerticesAcessados = []
         for key,value in self.listaAdjacencia.items():
-            print(key)
-            print(value)
-            for vertice in list(value):
-                if(key not in listaVerticesAcessados):
-                    print("("+ key+","+vertice+")"+self.printPonderacaoAresta(Aresta(key,vertice))+self.printRotulacaoAresta(Aresta(key,vertice)))
             listaVerticesAcessados.append(key)
-
+            for vertice in value:
+                 if(vertice not in listaVerticesAcessados):
+                    aresta = Aresta(key,vertice)
+                    rotulo = self.printRotulacaoAresta(aresta)
+                    ponderacao = self.printPonderacaoAresta(aresta)
+                    print(f'({key},{vertice}) - Ponderação: {ponderacao} | Rotulação: {rotulo}')
+                    
     def printPonderacaoAresta(self,aresta:Aresta):
-        return (' - Ponderação: '+ self.ponderacaoAresta[aresta])
+        return (self.ponderacaoAresta[aresta]) if aresta in self.ponderacaoAresta else ""
 
     def printRotulacaoAresta(self,aresta:Aresta):
-        return (' - Rotulação: '+ self.rotulacaoAresta[aresta])
-    
-
-
-g = ListaAdjacencia(0)
-
-g.addVertice("a")
-g.addVertice("b")
-g.addVertice("c")
-g.addVertice("d")
-
-g.addAresta("a","b")
-#g.printVertices()
-g.printArestas()
+        return (self.rotulacaoAresta[aresta]) if aresta in self.rotulacaoAresta else ""
