@@ -1,7 +1,7 @@
 from Aresta import *
 import pandas as pd
 import numpy as np
-#import igraph as ig
+import igraph as ig
 
 #https://www.programiz.com/dsa/graph-adjacency-matrix
 #https://stackoverflow.com/questions/30451252/print-5-items-in-a-row-on-separate-lines-for-a-list
@@ -42,11 +42,12 @@ class MatrizAdjacencia():
        self.adjMatrix[v1][v2] = valor
        self.adjMatrix[v2][v1] = valor
 
-    def addRotulacaoAresta(self,aresta:Aresta,rotulo):
+    def addRotulacaoAresta(self,v1,v2,rotulo):
+       aresta = Aresta(v1,v2)
        self.rotulacaoAresta[aresta] = rotulo
 
-    def addPonderacaoVertice(self,vertice,valor):
-       self.ponderacaoVertice[vertice] = valor
+    def addPonderacaoVertice(self,v,valor):
+       self.ponderacaoVertice[v] = valor
 
     def printArestas(self):
         listaVerticesVisitados = []
@@ -56,15 +57,16 @@ class MatrizAdjacencia():
             for v2 in self.adjMatrix.keys():
                 if(df[v1][v2] != 0 and v2 not in listaVerticesVisitados):
                     ponderacao = df[v1][v2]
-                    rotulo = self.printRotulacaoAresta(Aresta(v1,v2))
+                    rotulo = self.printRotulacaoAresta(v1,v2)
                     print(f'({v1},{v2}) - Ponderação: {ponderacao} | Rotulação: {rotulo}')
             listaVerticesVisitados.append(v1)
 
-    def printRotulacaoAresta(self,aresta:Aresta):
+    def printRotulacaoAresta(self,v1,v2):
+        aresta = Aresta(v1,v2)
         return (self.rotulacaoAresta[aresta]) if aresta in self.rotulacaoAresta else ""
 
-    def verificaExistenciaVertice(self,vertice):
-        return True if vertice in self.ponderacaoVertice else False
+    def verificaExistenciaVertice(self,v):
+        return True if v in self.ponderacaoVertice else False
 
     def verificaExistenciaAresta(self,v1,v2):
         return True if self.adjMatrix[v1][v2] != 0 else False
@@ -108,20 +110,28 @@ class MatrizAdjacencia():
             if(self.adjMatrix[v1][v2] !=0):
                 valid = False    
        return valid 
+    
+    def importarArquivo(self):
+        grafo = ig.Graph()
+        grafo = ig.load("entrada.gml")
+        self.adjMatrix = pd.DataFrame(grafo.get_adjacency(), columns=["a","b","c","d","e","f"], index=["a","b","c","d","e","f"])
+        self.print_matrix()
+        
+        
+    
 
             
 kek = ["a","b","c"]
 g = MatrizAdjacencia(kek,3)
+g.importarArquivo()
 
-g.add_edge("a","b")
-g.add_edge("b","c")
-g.add_edge("c","a")
+# g.add_edge("a","b")
+# g.add_edge("b","c")
+# g.add_edge("c","a")
 
 
-g.addPonderacaoAresta("a","b",12)
-g.addPonderacaoAresta("a","b",1)
-g.addRotulacaoAresta(Aresta("a","b"),"carlos")
-g.print_matrix()
-g.printArestas()
-print (g.quantidadeAresta())
-
+# g.addPonderacaoAresta("a","b",12)
+# g.addPonderacaoAresta("a","b",1)
+# g.addRotulacaoAresta("a","b","carlos")
+# g.print_matrix()
+# g.printArestas()
