@@ -1,5 +1,5 @@
 from Aresta import *
-import igraph as ig
+#import igraph as ig
 
 #https://www.programiz.com/dsa/graph-adjacency-matrix
 #https://stackoverflow.com/questions/30451252/print-5-items-in-a-row-on-separate-lines-for-a-list
@@ -59,9 +59,6 @@ class MatrizAdjacencia():
        self.rotulacaoVertice[vertice] = indice
        self.auxVerticeIndice[indice] = vertice
 
-    def verificaExistenciaAresta(self,v1,v2):
-        return True if self.adjMatrix[self.rotulacaoVertice[v1]][self.rotulacaoVertice[v2]] != 0 else False
-
     def printArestas(self):
         listaVerticesVisitados = []
         for i in range(len(self.adjMatrix)):
@@ -73,36 +70,65 @@ class MatrizAdjacencia():
                     rotulo = self.printRotulacaoAresta(Aresta(v1,v2))
                     print(f'({v1},{v2}) - Ponderação: {ponderacao} | Rotulação: {rotulo}')
             listaVerticesVisitados.append(i)
-                    
 
     def printRotulacaoAresta(self,aresta:Aresta):
         return (self.rotulacaoAresta[aresta]) if aresta in self.rotulacaoAresta else ""
 
-    def importarArquivo(self):
-        grafo = ig.Graph()
-        grafo = ig.load("entrada.gml")
-        self.adjMatrix =grafo.get_adjacency()
+    def verificaExistenciaVertice(self,vertice):
+        return True if vertice in self.ponderacaoVertice else False
+
+    def verificaExistenciaAresta(self,v1,v2):
+        return True if self.adjMatrix[self.rotulacaoVertice[v1]][self.rotulacaoVertice[v2]] != 0 else False
+
+    def verificaAdjacenciaVertices(self,v1, v2):
+        return True if self.adjMatrix[self.rotulacaoVertice[v1]][self.rotulacaoVertice[v2]] != 0 else False
+
+    def verificaAdjacenciaArestas(self,a1:Aresta,a2:Aresta):
+        if ((a1 != a2) and self.verificaExistenciaAresta(a1.vertice1,a1.vertice2) and self.verificaExistenciaAresta(a2.vertice1,a2.vertice2)): 
+            if (self.tipoGrafo == 0):
+                return a1.vertice1 == a2.vertice1 or a1.vertice2 == a2.vertice2 or a1.vertice1 == a2.vertice2 or a2.vertice1 == a1.vertice2
+            else: 
+                return a1.vertice1 == a2.vertice1
+        else: 
+            return False
+
+    def quantidadeAresta(self):
+        length = 0
+        for i in range(len(self.adjMatrix)):
+            for j in range(len(self.adjMatrix)):
+                if(self.adjMatrix[i][j] != 0):
+                    length += 1
+        return int(length/2)
+    
+    def quantidadeVertices(self):
+        return len(self.adjMatrix)
+
+
+    def verificaGrafoCompleto(self):
+       valid = True
+       for i in range(len(self.adjMatrix)):
+        for j in range(len(self.adjMatrix)):
+            if(self.adjMatrix[i][j]==0 and i != j):
+                valid = False    
+       return valid
+    
+    def verificaGrafoVazio(self):
+       valid = True
+       for i in range(len(self.adjMatrix)):
+        for j in range(len(self.adjMatrix)):
+            if(self.adjMatrix[i][j]==0 and i != j):
+                valid = False    
+       return valid 
+    # def importarArquivo(self):
+    #     grafo = ig.Graph()
+    #     grafo = ig.load("entrada.gml")
+    #     self.adjMatrix =grafo.get_adjacency()
 
 
             
 
             
 g = MatrizAdjacencia(5,["a","b","c","d","e"])
-# g.add_edge("a", "b")
-# g.add_edge("b", "c")
-# g.add_edge("c", "d")
-# g.add_edge("d", "a")
-# g.add_edge("a", "c")
-
-# # g.addPonderacaoAresta("a","b",12)
-# # g.addRotulacaoAresta(Aresta("a","b"),"carlos")
-
-# # g.printArestas()
-
-# g.print_matrix()
-
-
-g.importarArquivo()
 
 g.printArestas()
 

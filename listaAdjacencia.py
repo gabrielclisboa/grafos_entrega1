@@ -87,11 +87,8 @@ class ListaAdjacencia():
         
     def printVertices(self):
        for key, value in self.listaAdjacencia.items():
-          print(key)
-
-
-    def printPonderacaoVertice(self,vertice):
-       return print("- Ponderação: "+ self.ponderacaoVertice[vertice])
+          ponderacao = self.printPonderacaoVertice(key)
+          print(f'{key} - Ponderação: {ponderacao}')
 
     def printArestas(self):
         listaVerticesAcessados = []
@@ -109,3 +106,6 @@ class ListaAdjacencia():
 
     def printRotulacaoAresta(self,aresta:Aresta):
         return (self.rotulacaoAresta[aresta]) if aresta in self.rotulacaoAresta else ""
+
+    def printPonderacaoVertice(self,vertice):
+       return (self.ponderacaoVertice[vertice]) if vertice in self.ponderacaoVertice else ""
