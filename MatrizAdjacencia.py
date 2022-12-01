@@ -17,37 +17,34 @@ class MatrizAdjacencia():
         self.size = size
 
     # Add edges
-    def add_edge(self, v1, v2):
-        if v1 == v2:
-            print("Aresta entre os vértices %d e %d , já existe" % (v1, v2))
-        self.adjMatrix[v1][v2] = 1
-        self.adjMatrix[v2][v1] = 1
+    def addAresta(self, v1, v2):
+        if(self.verificaExistenciaVertice(v1) and self.verificaExistenciaVertice(v2)):
+            self.adjMatrix[v1][v2] = 1
+            self.adjMatrix[v2][v1] = 1
 
     # Remove edges
-    def remove_edge(self, v1, v2):
-        if self.adjMatrix[v1][v2] == 0:
-            print("Nenhuma aresta entre %d e %d" % (v1, v2))
-            return
-        self.adjMatrix[v1][v2] = 0
-        self.adjMatrix[v2][v1] = 0
-
-    def __len__(self):
-        return self.size
+    def removeAresta(self, v1, v2):
+        if(self.verificaExistenciaVertice(v1) and self.verificaExistenciaVertice(v2)):
+            self.adjMatrix[v1][v2] = 0
+            self.adjMatrix[v2][v1] = 0
 
     # Print the matrix
-    def print_matrix(self):
+    def printMatriz(self):
         print(self.adjMatrix)
 
     def addPonderacaoAresta(self,v1,v2,valor):
-       self.adjMatrix[v1][v2] = valor
-       self.adjMatrix[v2][v1] = valor
+        if(self.verificaExistenciaAresta(Aresta(v1,v2))):
+            self.adjMatrix[v1][v2] = valor
+            self.adjMatrix[v2][v1] = valor
 
     def addRotulacaoAresta(self,v1,v2,rotulo):
-       aresta = Aresta(v1,v2)
-       self.rotulacaoAresta[aresta] = rotulo
+        if(self.verificaExistenciaAresta(Aresta(v1,v2))):
+            aresta = Aresta(v1,v2)
+            self.rotulacaoAresta[aresta] = rotulo
 
     def addPonderacaoVertice(self,v,valor):
-       self.ponderacaoVertice[v] = valor
+        if(self.verificaExistenciaVertice(v)):
+            self.ponderacaoVertice[v] = valor
 
     def printArestas(self):
         listaVerticesVisitados = []
@@ -96,42 +93,26 @@ class MatrizAdjacencia():
 
 
     def verificaGrafoCompleto(self):
-       valid = True
-       for v1 in self.adjMatrix.keys():
-        for v2 in self.adjMatrix.keys():
-            if(self.adjMatrix[v1][v2]==0 and v1 != v2):
-                valid = False    
-       return valid
+        valid = True
+        for v1 in self.adjMatrix.keys():
+            for v2 in self.adjMatrix.keys():
+                if(self.adjMatrix[v1][v2]==0 and v1 != v2):
+                    valid = False    
+        return valid
     
     def verificaGrafoVazio(self):
-       valid = True
-       for v1 in self.adjMatrix.keys():
-        for v2 in self.adjMatrix.keys():
-            if(self.adjMatrix[v1][v2] !=0):
-                valid = False    
-       return valid 
+        valid = True
+        for v1 in self.adjMatrix.keys():
+            for v2 in self.adjMatrix.keys():
+                if(self.adjMatrix[v1][v2] !=0):
+                    valid = False    
+        return valid 
     
     def importarArquivo(self):
-        grafo = ig.Graph()
-        grafo = ig.load("entrada.gml")
-        self.adjMatrix = pd.DataFrame(grafo.get_adjacency(), columns=["a","b","c","d","e","f"], index=["a","b","c","d","e","f"])
-        self.print_matrix()
-        
-        
+        self.printMatriz()
     
+    def exportandoArquivo(self):
+        self.printMatriz()
 
-            
-kek = ["a","b","c"]
-g = MatrizAdjacencia(kek,3)
-g.importarArquivo()
-
-# g.add_edge("a","b")
-# g.add_edge("b","c")
-# g.add_edge("c","a")
-
-
-# g.addPonderacaoAresta("a","b",12)
-# g.addPonderacaoAresta("a","b",1)
-# g.addRotulacaoAresta("a","b","carlos")
-# g.print_matrix()
-# g.printArestas()
+    def __len__(self):
+        return self.size

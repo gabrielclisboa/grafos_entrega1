@@ -8,46 +8,51 @@ class ListaAdjacencia():
         self.rotulacaoAresta = {}
         self.tipoGrafo = tipoGrafo
 
-    def addVertice(self,vertice):
-        self.listaAdjacencia[vertice] = []
+    def addVertice(self,v):
+        self.listaAdjacencia[v] = []
 
-    def addAresta(self,vertice,verticeAdjacente):
-        if(self.verificaExistenciaVertice(vertice) and self.verificaExistenciaVertice(verticeAdjacente)):
-            self.listaAdjacencia[vertice].append(verticeAdjacente)
+    def addAresta(self,v1,v2):
+        if(self.verificaExistenciaVertice(v1) and self.verificaExistenciaVertice(v2)):
+            self.listaAdjacencia[v1].append(v2)
             if(self.tipoGrafo == 0):
-                self.listaAdjacencia[verticeAdjacente].append(vertice)
+                self.listaAdjacencia[v2].append(v1)
 
-
-    def removeAresta(self,vertice,verticeAdjacente):
-        if(vertice in self.ponderacaoAresta):
-            self.ponderacaoAresta[vertice].remove(verticeAdjacente)
-        if(vertice in self.rotulacaoAresta):
-            self.rotulacaoAresta[vertice].remove(verticeAdjacente)
+    def removeAresta(self,v1,v2):
+        if(self.verificaExistenciaAresta(Aresta(v1,v2))):
+            if(v1 in self.ponderacaoAresta):
+                self.ponderacaoAresta[v1].remove(v2)
+            if(v1 in self.rotulacaoAresta):
+                self.rotulacaoAresta[v1].remove(v2)
             
-        self.listaAdjacencia[vertice].remove(verticeAdjacente)
-        if(self.tipoGrafo == 0):
-            self.listaAdjacencia[verticeAdjacente].remove(vertice)
+            self.listaAdjacencia[v1].remove(v2)
+            if(self.tipoGrafo == 0):
+                self.listaAdjacencia[v2].remove(v1)
 
-    def addPonderacaoAresta(self,aresta:Aresta,valor):
-       self.ponderacaoAresta[aresta] = valor
+    def addPonderacaoAresta(self,v1,v2,valor):
+       if(self.verificaExistenciaAresta(Aresta(v1,v2))):
+            aresta = Aresta(v1,v2)
+            self.ponderacaoAresta[aresta] = valor
 
-    def addPonderacaoVertice(self,vertice,valor):
-       self.ponderacaoVertice[vertice] = valor
+    def addPonderacaoVertice(self,v,valor):
+       if(self.verificaExistenciaVertice(v)):
+            self.ponderacaoVertice[v] = valor
 
-    def addRotulacaoAresta(self,aresta:Aresta,rotulo):
-       self.rotulacaoAresta[aresta] = rotulo
+    def addRotulacaoAresta(self,v1,v2,rotulo):
+       if(self.verificaExistenciaAresta(Aresta(v1,v2))):
+            aresta = Aresta(v1,v2)
+            self.rotulacaoAresta[aresta] = rotulo
 
-    def verificaExistenciaAresta(self,vertice,verticeAdjacente):
-        return True if verticeAdjacente in self.listaAdjacencia[vertice] else False
+    def verificaExistenciaAresta(self,v1,v2):
+        return True if v2 in self.listaAdjacencia[v1] else False
     
-    def verificaExistenciaVertice(self,vertice):
-        return True if vertice in self.listaAdjacencia else False
+    def verificaExistenciaVertice(self,v):
+        return True if v in self.listaAdjacencia else False
     
-    def verificaAdjacenciaVertices(self,vertice, verticeAdjacete):
-        return True if vertice in self.listaAdjacencia[verticeAdjacete] else False
+    def verificaAdjacenciaVertices(self,v1, v2):
+        return True if v1 in self.listaAdjacencia[v2] else False
     
     def verificaAdjacenciaArestas(self,aresta:Aresta,arestaAdjacente:Aresta):
-        if (aresta != arestaAdjacente): 
+        if (aresta != arestaAdjacente and self.verificaExistenciaAresta(Aresta(aresta)) and self.verificaExistenciaAresta(Aresta(arestaAdjacente))): 
             if (self.tipoGrafo == 0):
                 return aresta.vertice1 == arestaAdjacente.vertice1 or aresta.vertice2 == arestaAdjacente.vertice2 or aresta.vertice1 == arestaAdjacente.vertice2 or arestaAdjacente.vertice1 == aresta.vertice2
             else: 
@@ -109,3 +114,9 @@ class ListaAdjacencia():
 
     def printPonderacaoVertice(self,vertice):
        return (self.ponderacaoVertice[vertice]) if vertice in self.ponderacaoVertice else ""
+    
+    def importarArquivo(self):
+        self.printListaAdjacencia()
+    
+    def exportandoArquivo(self):
+        self.printListaAdjacencia()
